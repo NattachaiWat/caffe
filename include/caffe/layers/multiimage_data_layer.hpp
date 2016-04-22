@@ -1,5 +1,5 @@
-#ifndef CAFFE_IMAGE_DATA_LAYER_HPP_
-#define CAFFE_IMAGE_DATA_LAYER_HPP_
+#ifndef CAFFE_MULTIIMAGE_DATA_LAYER_HPP_
+#define CAFFE_MULTIIMAGE_DATA_LAYER_HPP_
 
 #include <string>
 #include <utility>
