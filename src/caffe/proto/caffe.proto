@@ -831,12 +831,12 @@ message MultiImageDataParameter {
   optional bool mirror = 6 [default = false];
   optional string root_folder = 12 [default = ""];
   // add the image ratation
-  optional float rotation_theta_min = 14 [default = 0];
+  optional float rotation_theta_min = 14 [default = 0]; // default without rotation
   optional float rotation_theta_max = 15 [default = 0];
   // add the the pca jittering
-  repeated float eig_value = 16; 
-  repeated float eig_vector = 17;
-  optional float eig_coef_mean = 18 [default = 0];
+  repeated float eig_value = 16; // order is b,g,r 
+  repeated float eig_vector = 17; // order is v11 v12 v13 v21 v22 v23 v31 v32 v33 
+  optional float eig_coef_mean = 18 [default = 0]; // the gaussian distribution of random coeffcient
   optional float eig_coef_var = 19 [default = 0.1];
 }
 
