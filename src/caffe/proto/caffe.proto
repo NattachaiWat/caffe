@@ -403,6 +403,8 @@ message LayerParameter {
   optional WindowDataParameter window_data_param = 129;
   optional MultiImageDataParameter multiimage_data_param = 200;
   optional MultiLabelLossParameter multilabel_loss_param = 201;
+  optional TripletLossParameter triplet_loss_param = 202;
+  optional TripletAccuracyParameter triplet_accuracy_param = 203;
 }
 
 // Message that stores parameters used to apply transformation
@@ -844,6 +846,17 @@ message MultiLabelLossParameter{
   repeated float weight = 2; // set all the label's attributes
 }
 
+//-----------add triplet loss layer parameters-------------------
+message TripletLossParameter{
+    // margin for disimilar pair
+    optional float margin = 1 [default = 1.0];  
+}
+
+// ------------add triplet accuracy-------------
+message TripletAccuracyParameter{
+    // margin for disimilar pair
+    optional float margin = 1 [default = 1.0];
+}
 message InfogainLossParameter {
   // Specify the infogain matrix source.
   optional string source = 1;
