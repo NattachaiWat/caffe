@@ -407,6 +407,7 @@ message LayerParameter {
   optional TripletExpLossParameter triplet_exploss_param = 204;
   optional TripletDExpLossParameter triplet_dexploss_param = 205;
   optional TripletAccuracyParameter triplet_accuracy_param = 203;
+  optional TwoEltwiseParameter twoeltwise_param = 206;
 }
 
 // Message that stores parameters used to apply transformation
@@ -698,7 +699,17 @@ message EltwiseParameter {
   // of computing the gradient for the PROD operation. (No effect for SUM op.)
   optional bool stable_prod_grad = 3 [default = true];
 }
-
+message TwoEltwiseParameter {
+  enum TwoEltwiseOp {
+    PROD = 0;
+    SUM = 1;
+    MAX = 2;
+    SUB = 3;
+  }
+  optional TwoEltwiseOp operation = 1 [default = SUM]; // element-wise operation
+  optional bool absout = 2 [default = false]; // element-wise operation
+  optional bool numsqsum = 3 [default = false]; // example-wise operation, first order than absout
+}
 // Message that stores parameters used by ELULayer
 message ELUParameter {
   // Described in:
