@@ -104,8 +104,16 @@ TYPED_TEST(OnlinePairLossLayerTest, TestForward) {
         else
         { this->pairdist_neg_.push_back(tmp); }
     }
-  std::sort(this->pairdist_pos_.begin(), this->pairdist_pos_.end(), pair_descend);
-  std::sort(this->pairdist_neg_.begin(), this->pairdist_neg_.end(), pair_ascend);
+  // std::sort(this->pairdist_pos_.begin(), this->pairdist_pos_.end(), pair_descend);
+  // std::sort(this->pairdist_neg_.begin(), this->pairdist_neg_.end(), pair_ascend);
+  if ( this->pairdist_pos_.size() > 0)
+  {
+    std::qsort(&this->pairdist_pos_[0], this->pairdist_pos_.size(), sizeof(PairDist), pair_descend_qsort);
+  }
+  if ( this->pairdist_neg_.size() > 0 )
+  {
+    std::qsort(&this->pairdist_neg_[0], this->pairdist_neg_.size(), sizeof(PairDist), pair_ascend_qsort);
+  }
   // get the number of hard pos and hard neg counts
   int pos_num = this->pairdist_pos_.size() > hards_pos ? hards_pos : this->pairdist_pos_.size();
   int neg_num = this->pairdist_neg_.size() > hards_neg ? hards_neg : this->pairdist_neg_.size();

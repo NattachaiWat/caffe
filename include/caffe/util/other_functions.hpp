@@ -22,6 +22,9 @@ typedef struct Pair
 bool pair_ascend(const PairDist& a, const PairDist& b);
 bool pair_descend(const PairDist& a, const PairDist& b);
 
+int pair_ascend_qsort(const void * a, const void * b);
+int pair_descend_qsort(const void * a, const void * b);
+
 
 
 } // end namespance caffe

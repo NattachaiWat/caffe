@@ -68,8 +68,17 @@ void OnlinePairLossLayer<Dtype>::Forward_cpu(
     }
   // sort function
   
-  std::sort(pairdist_pos_.begin(), pairdist_pos_.end(), pair_descend);
-  std::sort(pairdist_neg_.begin(), pairdist_neg_.end(), pair_ascend);
+  // std::sort(pairdist_pos_.begin(), pairdist_pos_.end(), pair_descend);
+  // std::sort(pairdist_neg_.begin(), pairdist_neg_.end(), pair_ascend);
+  if ( pairdist_pos_.size() > 0)
+  {
+    std::qsort(&pairdist_pos_[0], pairdist_pos_.size(), sizeof(PairDist), pair_descend_qsort);
+  }
+  if ( pairdist_neg_.size() > 0)
+  {
+    std::qsort(&pairdist_neg_[0], pairdist_neg_.size(), sizeof(PairDist), pair_ascend_qsort);
+  }
+
 
   // sort_pairdist(pairdist_pos_, false);
   // sort_pairdist(pairdist_neg_, true);

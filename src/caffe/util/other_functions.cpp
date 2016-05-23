@@ -19,6 +19,35 @@ bool pair_descend(const PairDist& a, const PairDist& b)
     return a.dist > b.dist;
 }
 
+int pair_ascend_qsort(const void * a, const void * b)
+{
+    PairDist aa = *((PairDist*)a);
+    PairDist bb = *((PairDist*)b);
+    if (aa.dist > bb.dist)
+    {
+        return -1;
+    }
+    if (aa.dist == bb.dist)
+    {
+        return 0;
+    }
+    return 1;
+}
+int pair_descend_qsort(const void * a, const void * b)
+{
+    PairDist aa = *((PairDist*)a);
+    PairDist bb = *((PairDist*)b);
+    if (aa.dist < bb.dist)
+    {
+        return -1;
+    }
+    if (aa.dist == bb.dist)
+    {
+        return 0;
+    }
+    return 1;
+}
+
 
 } // end the namespace caffe
 
