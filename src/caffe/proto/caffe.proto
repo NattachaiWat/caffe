@@ -408,6 +408,7 @@ message LayerParameter {
   optional TripletExpLossParameter triplet_exploss_param = 204;
   optional TripletDExpLossParameter triplet_dexploss_param = 205;
   optional TripletAccuracyParameter triplet_accuracy_param = 203;
+  optional OnlinePairLossParameter onlinepair_loss_param = 207;
   optional TwoEltwiseParameter twoeltwise_param = 206;
 }
 
@@ -879,6 +880,22 @@ message TripletAccuracyParameter{
     // margin for disimilar pair
     optional float margin = 1 [default = 1.0];
 }
+
+// -----------add onlie pair contrast loss parameter -------
+message OnlinePairLossParameter {
+  // margin for dissimilar pair
+  optional float margin = 1 [default = 1.0];
+  // The first implementation of this cost did not exactly match the cost of
+  // Hadsell et al 2006 -- using (margin - d^2) instead of (margin - d)^2.
+  // legacy_version = false (the default) uses (margin - d)^2 as proposed in the
+  // Hadsell paper. New models should probably use this version.
+  // legacy_version = true uses (margin - d^2). This is kept to support /
+  // reproduce existing models and results
+  optional bool legacy_version = 2 [default = false];
+  optional int32 hards_pos = 3 [default = 150];
+  optional int32 hards_neg = 4 [default = 150];
+}
+
 message InfogainLossParameter {
   // Specify the infogain matrix source.
   optional string source = 1;
