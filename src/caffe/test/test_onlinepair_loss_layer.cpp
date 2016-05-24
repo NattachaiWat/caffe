@@ -67,14 +67,16 @@ TYPED_TEST(OnlinePairLossLayerTest, TestForward) {
   // manually compute to compare
   OnlinePairLossParameter *onlinepair_loss_param = 
     layer_param.mutable_onlinepair_loss_param();
-  const Dtype margin = 1.0;
+  const Dtype margin_neg = 1.0;
+  const Dtype margin_pos = 0.5;
   const Dtype hards_pos = 10;
   const Dtype hards_neg = 10;
-  bool legacy_version = true; // check both true and false
+  bool legacy_version = false; // check both true and false
   onlinepair_loss_param->set_legacy_version( legacy_version );
   onlinepair_loss_param->set_hards_pos( hards_pos );
   onlinepair_loss_param->set_hards_neg( hards_neg );
-  onlinepair_loss_param->set_margin( margin );
+  onlinepair_loss_param->set_margin_neg( margin_neg );
+  onlinepair_loss_param->set_margin_pos( margin_pos );
   OnlinePairLossLayer<Dtype> layer(layer_param);
   std::cout<< "doing foward ing "<<std::endl;
   layer.SetUp(this->blob_bottom_vec_, this->blob_top_vec_);
@@ -127,15 +129,24 @@ TYPED_TEST(OnlinePairLossLayerTest, TestForward) {
   Dtype loss(0);
   for (int i = 0; i < pos_num; i++)
   {
-    loss += this->pairdist_pos_[i].dist;
+    if (legacy_version)
+    {
+        loss += std::max( Dtype(0.0), this->pairdist_pos_[i].dist - margin_pos);
+    }
+    else
+    {
+        Dtype dist = std::max( Dtype(0.0), sqrt( this->pairdist_pos_[i].dist)-margin_pos );
+        loss += dist * dist;
+    }
+    // loss += this->pairdist_pos_[i].dist;
   }
   for (int j = 0; j < neg_num; j++)
   {
     if(legacy_version)
-        loss += std::max( Dtype(0), margin - this->pairdist_neg_[j].dist);
+        loss += std::max( Dtype(0), margin_neg - this->pairdist_neg_[j].dist);
     else
     {
-        Dtype dist = std::max(Dtype(0), margin - sqrt( this->pairdist_neg_[j].dist) );
+        Dtype dist = std::max(Dtype(0), margin_neg - sqrt( this->pairdist_neg_[j].dist) );
         loss += dist*dist;
     }
   }
