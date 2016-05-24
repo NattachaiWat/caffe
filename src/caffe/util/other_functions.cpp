@@ -25,13 +25,13 @@ int pair_ascend_qsort(const void * a, const void * b)
     PairDist bb = *((PairDist*)b);
     if (aa.dist > bb.dist)
     {
-        return -1;
+        return 1;
     }
     if (aa.dist == bb.dist)
     {
         return 0;
     }
-    return 1;
+    return -1;
 }
 int pair_descend_qsort(const void * a, const void * b)
 {
@@ -39,13 +39,13 @@ int pair_descend_qsort(const void * a, const void * b)
     PairDist bb = *((PairDist*)b);
     if (aa.dist < bb.dist)
     {
-        return -1;
+        return 1;
     }
     if (aa.dist == bb.dist)
     {
         return 0;
     }
-    return 1;
+    return -1;
 }
 
 
