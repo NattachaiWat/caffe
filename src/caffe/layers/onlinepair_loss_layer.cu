@@ -14,7 +14,8 @@ void OnlinePairLossLayer<Dtype>::Forward_gpu(
   // const int count = bottom[0]->count();
   int num = bottom[0]->num();
   const int channels = bottom[0]->channels();
-  Dtype margin = this->layer_param_.onlinepair_loss_param().margin();
+  Dtype margin_pos = this->layer_param_.onlinepair_loss_param().margin_pos();
+  Dtype margin_neg = this->layer_param_.onlinepair_loss_param().margin_neg();
   bool legacy_version =
       this->layer_param_.onlinepair_loss_param().legacy_version();
   int hards_pos = this->layer_param_.onlinepair_loss_param().hards_pos();
@@ -63,17 +64,26 @@ void OnlinePairLossLayer<Dtype>::Forward_gpu(
   Dtype loss(0.0);
   for (int i = 0; i<pos_num; i++)
   {
-    loss += pairdist_pos_[i].dist;
+    if (legacy_version)
+    {
+        loss += std::max( Dtype(0.0), pairdist_pos_[i].dist - margin_pos);
+    }
+    else
+    {
+        Dtype dist = std::max( Dtype(0.0), sqrt( pairdist_pos_[i].dist)-margin_pos );
+        loss += dist * dist;
+    }
+    // loss += pairdist_pos_[i].dist;
   }
   for (int i = 0; i<neg_num; i++)
   {
     if (legacy_version) 
     {
-        loss += std::max( Dtype(0.0), margin - pairdist_neg_[i].dist);
+        loss += std::max( Dtype(0.0), margin_neg - pairdist_neg_[i].dist);
     }
     else
     {
-        Dtype dist = std::max( Dtype(0.0), margin - sqrt( pairdist_neg_[i].dist ) );
+        Dtype dist = std::max( Dtype(0.0), margin_neg - sqrt( pairdist_neg_[i].dist ) );
         loss += dist * dist;
     }
   }
@@ -84,7 +94,8 @@ void OnlinePairLossLayer<Dtype>::Forward_gpu(
 template <typename Dtype>
 void OnlinePairLossLayer<Dtype>::Backward_gpu(const vector<Blob<Dtype>*>& top,
     const vector<bool>& propagate_down, const vector<Blob<Dtype>*>& bottom) {
-  Dtype margin = this->layer_param_.onlinepair_loss_param().margin();
+  Dtype margin_pos = this->layer_param_.onlinepair_loss_param().margin_pos();
+  Dtype margin_neg = this->layer_param_.onlinepair_loss_param().margin_neg();
   bool legacy_version =
     this->layer_param_.onlinepair_loss_param().legacy_version();
   int count = bottom[0]->count();
@@ -117,13 +128,28 @@ void OnlinePairLossLayer<Dtype>::Backward_gpu(const vector<Blob<Dtype>*>& top,
         Dtype sign = (j == 0) ? 1 : -1;
         int position = (j == 0)? first : second;
         Dtype alpha = sign * top[0]->cpu_diff()[0] / Dtype(pos_num + neg_num);
-        // update the gradient
-        caffe_gpu_axpby(
-            channels,
-            alpha,
-            diff_.gpu_data(),
-            Dtype(1.0),
-            bout + (position*channels));
+        Dtype mdist(0.0);
+        Dtype beta(0.0);
+        if (legacy_version)
+        {
+            mdist = pairdist_pos_[i].dist - margin_pos;
+            beta = alpha;
+        }
+        else
+        {
+            Dtype dist = sqrt(pairdist_pos_[i].dist);
+            mdist = dist - margin_pos;
+            beta = alpha * mdist / (dist + Dtype(1e-4)); 
+        }
+        if (mdist > Dtype(0.0))
+        {
+            caffe_gpu_axpby(
+                channels,
+                beta,
+                diff_.gpu_data(),
+                Dtype(1.0),
+                bout + (position*channels));
+        }
       }
   }
   std::cout<< "start the neg gradient computation" << std::endl;
@@ -146,12 +172,12 @@ void OnlinePairLossLayer<Dtype>::Backward_gpu(const vector<Blob<Dtype>*>& top,
         Dtype mdist(0.0);
         Dtype beta(0.0);
         if (legacy_version) {
-            mdist = margin - pairdist_neg_[i].dist;
+            mdist = margin_neg - pairdist_neg_[i].dist;
             beta = -alpha;
         }
         else {
             Dtype dist = sqrt(pairdist_neg_[i].dist);
-            mdist = margin - dist;
+            mdist = margin_neg - dist;
             beta  = -alpha * mdist / (dist + Dtype(1e-4));
         }
         if ( mdist > Dtype(0.0) )

@@ -884,16 +884,17 @@ message TripletAccuracyParameter{
 // -----------add onlie pair contrast loss parameter -------
 message OnlinePairLossParameter {
   // margin for dissimilar pair
-  optional float margin = 1 [default = 1.0];
+  optional float margin_pos = 1 [default = 0.0];
+  optional float margin_neg = 2 [default = 1.0];
   // The first implementation of this cost did not exactly match the cost of
   // Hadsell et al 2006 -- using (margin - d^2) instead of (margin - d)^2.
   // legacy_version = false (the default) uses (margin - d)^2 as proposed in the
   // Hadsell paper. New models should probably use this version.
   // legacy_version = true uses (margin - d^2). This is kept to support /
   // reproduce existing models and results
-  optional bool legacy_version = 2 [default = false];
-  optional int32 hards_pos = 3 [default = 150];
-  optional int32 hards_neg = 4 [default = 150];
+  optional bool legacy_version = 3 [default = false];
+  optional int32 hards_pos = 4 [default = 150];
+  optional int32 hards_neg = 5 [default = 150];
 }
 
 message InfogainLossParameter {
