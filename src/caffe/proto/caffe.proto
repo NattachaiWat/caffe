@@ -393,10 +393,10 @@ message LayerParameter {
   optional ReductionParameter reduction_param = 136;
   optional ReLUParameter relu_param = 123;
   optional ReshapeParameter reshape_param = 133;
-  optional ROIPoolingParameter roi_pooling_param = 146;
+  optional ROIPoolingParameter roi_pooling_param = 147;
   optional ScaleParameter scale_param = 142;
   optional SigmoidParameter sigmoid_param = 124;
-  optional SmoothL1LossParameter smooth_l1_loss_param = 147;
+  optional SmoothL1LossParameter smooth_l1_loss_param = 148;
   optional SoftmaxParameter softmax_param = 125;
   optional SPPParameter spp_param = 132;
   optional SliceParameter slice_param = 126;
