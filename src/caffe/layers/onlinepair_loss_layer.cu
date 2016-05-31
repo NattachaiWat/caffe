@@ -111,8 +111,8 @@ void OnlinePairLossLayer<Dtype>::Backward_gpu(const vector<Blob<Dtype>*>& top,
   int second;
   // get the pointer of backward gradient
   Dtype* bout = bottom[0]->mutable_cpu_diff();
-  std::cout<< "start the pos gradient computation" << std::endl;
-  std::cout<< "pos count is : " << pos_num << std::endl;
+  // std::cout<< "start the pos gradient computation" << std::endl;
+  // std::cout<< "pos count is : " << pos_num << std::endl;
   for (int i = 0; i < pos_num; i++)
   {
       first = pairdist_pos_[i].first;
@@ -152,8 +152,8 @@ void OnlinePairLossLayer<Dtype>::Backward_gpu(const vector<Blob<Dtype>*>& top,
         }
       }
   }
-  std::cout<< "start the neg gradient computation" << std::endl;
-  std::cout<< "neg count is : " << neg_num << std::endl;
+  // std::cout<< "start the neg gradient computation" << std::endl;
+  // std::cout<< "neg count is : " << neg_num << std::endl;
   for (int i = 0; i < neg_num; i ++)
   {
     first = pairdist_neg_[i].first;
