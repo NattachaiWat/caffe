@@ -413,6 +413,7 @@ message LayerParameter {
   optional OnlinePairLossParameter onlinepair_loss_param = 207;
   optional RandomPairLossParameter randompair_loss_param = 208;
   optional TwoEltwiseParameter twoeltwise_param = 206;
+  optional LiftedStructSimilaritySoftmaxLossParameter lifted_struct_sim_softmax_loss_param  = 209;
 }
 
 // Message that stores parameters used to apply transformation
@@ -913,6 +914,11 @@ message RandomPairLossParameter {
   optional bool legacy_version = 3 [default = false];
   optional int32 hards_pos = 4 [default = 150];
   optional int32 hards_neg = 5 [default = 150];
+}
+
+/// ----add the lightenstructureloss of cvpr16 ----///
+message LiftedStructSimilaritySoftmaxLossParameter {
+  optional float margin = 1 [default = 1.0];
 }
 
 message InfogainLossParameter {
