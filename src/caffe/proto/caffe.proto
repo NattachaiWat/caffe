@@ -411,7 +411,6 @@ message LayerParameter {
   optional MultiLabelLossParameter multilabel_loss_param = 201;
   optional TripletLossParameter triplet_loss_param = 202;
   optional TripletExpLossParameter triplet_exploss_param = 204;
-  optional TripletDExpLossParameter triplet_dexploss_param = 205;
   optional TripletAccuracyParameter triplet_accuracy_param = 203;
   optional OnlinePairLossParameter onlinepair_loss_param = 207;
   optional RandomPairLossParameter randompair_loss_param = 208;
