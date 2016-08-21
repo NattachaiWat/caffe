@@ -882,11 +882,6 @@ message TripletExpLossParameter{
     // margin for disimilar pair
     optional float margin = 1 [default = 1.0];  
 }
-message TripletDExpLossParameter{
-    // margin for disimilar pair
-    optional float margin = 1 [default = 1.0];  
-}
-
 // ------------add triplet accuracy-------------
 message TripletAccuracyParameter{
     // margin for disimilar pair
