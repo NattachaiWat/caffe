@@ -421,6 +421,8 @@ message LayerParameter {
   optional STLossParameter st_loss_param = 211;
   optional PowerFileParameter power_file_param = 212;
   optional LocLossParameter loc_loss_param = 213;
+  // add the contrastive accuracy
+  optional ContrastiveAccuracyParameter contrastive_accuracy_param = 214;
 }
 
 // Message that stores parameters used to apply transformation
@@ -571,6 +573,17 @@ message ContrastiveLossParameter {
   optional bool legacy_version = 2 [default = false];
 }
 
+message ContrastiveAccuracyParameter {
+  // margin for dissimilar pair
+  optional float margin = 1 [default = 1.0];
+  // The first implementation of this cost did not exactly match the cost of
+  // Hadsell et al 2006 -- using (margin - d^2) instead of (margin - d)^2.
+  // legacy_version = false (the default) uses (margin - d)^2 as proposed in the
+  // Hadsell paper. New models should probably use this version.
+  // legacy_version = true uses (margin - d^2). This is kept to support /
+  // reproduce existing models and results
+  optional bool legacy_version = 2 [default = false];
+}
 message ConvolutionParameter {
   optional uint32 num_output = 1; // The number of outputs for the layer
   optional bool bias_term = 2 [default = true]; // whether to have bias terms
