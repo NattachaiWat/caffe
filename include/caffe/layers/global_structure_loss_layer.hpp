@@ -16,8 +16,8 @@ class GlobalStructureLossLayer: public LossLayer<Dtype> {
             : LossLayer<Dtype>(param) {}
         virtual void LayerSetUp(const vector<Blob<Dtype>*>& bottom,
             const vector<Blob<Dtype>*>&top);
-        // virtual void Reshape(
-        //    const vector<Blob<Dtype>*>& bottom, const vector<Blob<Dtype>*>& top);
+        virtual void Reshape(
+            const vector<Blob<Dtype>*>& bottom, const vector<Blob<Dtype>*>& top);
         // virtual inline int ExactNumBottomBlobs() const { return -1; }
         virtual inline int MinBottomBlobs() const {return 2; }
         virtual inline int MaxBottomBlobs() const {return 2; }

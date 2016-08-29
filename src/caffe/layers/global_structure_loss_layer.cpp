@@ -20,6 +20,44 @@ void GlobalStructureLossLayer<Dtype>::LayerSetUp(
     LossLayer<Dtype>::LayerSetUp(bottom, top);
     CHECK_EQ(bottom[0]->num(), bottom[1]->num());
     // static the class label, reshape the variables and output shape
+//    this->D = bottom[0]->count()/bottom[0]->num();
+//    Dtype label = 0;
+//    Dtype index = 0;
+//    this->class_label.clear();
+//    int num = bottom[1]->num();
+//    for (int i=0; i<num; i++)
+//    {   
+//        label = bottom[1]->cpu_data()[i];
+//        if(this->class_label.count(label))
+//        {
+//            this->class_label[label][1] += 1;
+//        }
+//        else
+//        {
+//            vector<Dtype> tmp; 
+//            tmp.push_back(index);
+//            index += 1; // record the releative label
+//            tmp.push_back(1);
+//            this->class_label[label] = tmp;
+//        }
+//    }
+//    // reshape the varibals
+//    C = int(index);
+//    class_centers_.Reshape(C, D, 1, 1);
+//    center_matrix_.Reshape(num, D, 1, 1);
+//    diff_xi_center_.Reshape(num, D, 1, 1);
+//    delta_flag_.Reshape(C, C, 1, 1);
+//    diff_centers_centers_.Reshape(C*C, D, 1, 1);
+//    sparse_codes_.Reshape(C, num, 1, 1);
+//    extend_vector_.Reshape(C, 1, 1, 1);
+//    caffe_set(C, Dtype(1.), extend_vector_.mutable_cpu_data());
+//    top[0]->Reshape(1,3,1,1);
+}
+
+template <typename Dtype>
+void GlobalStructureLossLayer<Dtype>::Reshape(
+    const vector<Blob<Dtype>*>& bottom, const vector<Blob<Dtype>*>& top) {
+    LossLayer<Dtype>::Reshape(bottom, top);
     this->D = bottom[0]->count()/bottom[0]->num();
     Dtype label = 0;
     Dtype index = 0;
@@ -53,43 +91,6 @@ void GlobalStructureLossLayer<Dtype>::LayerSetUp(
     caffe_set(C, Dtype(1.), extend_vector_.mutable_cpu_data());
     top[0]->Reshape(1,3,1,1);
 }
-
-//template <typename Dtype>
-//void GlobalStructureLossLayer<Dtype>::Reshape(
-//    const vector<Blob<Dtype>*>& bottom, const vector<Blob<Dtype>*>& top) {
-//    // static the class label, reshape the variables and output shape
-//    this->D = bottom[0]->count()/bottom[0]->num();
-//    Dtype label = 0;
-//    Dtype index = 0;
-//    int num = bottom[1]->num();
-//    for (int i=0; i<num; i++)
-//    {   
-//        label = bottom[1]->cpu_data()[i];
-//        if(this->class_label.count(label))
-//        {
-//            this->class_label[label][1] += 1;
-//        }
-//        else
-//        {
-//            vector<Dtype> tmp; 
-//            tmp.push_back(index);
-//            index += 1; // record the releative label
-//            tmp.push_back(1);
-//            this->class_label[label] = tmp;
-//        }
-//    }
-//    // reshape the varibals
-//    C = int(index);
-//    class_centers_.Reshape(C, D, 1, 1);
-//    center_matrix_.Reshape(num, D, 1, 1);
-//    diff_xi_center_.Reshape(num, D, 1, 1);
-//    delta_flag_.Reshape(C, C, 1, 1);
-//    diff_centers_centers_.Reshape(C*C, D, 1, 1);
-//    sparse_codes_.Reshape(num, C, 1, 1);
-//    extend_vector_.Reshape(C, 1, 1, 1);
-//    caffe_set(C, Dtype(1.), extend_vector_.mutable_cpu_data());
-//    top[0]->Reshape(1,3,1,1);
-//}
 
 template <typename Dtype>
 void GlobalStructureLossLayer<Dtype>::Forward_cpu( 
