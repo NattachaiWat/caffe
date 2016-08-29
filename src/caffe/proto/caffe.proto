@@ -423,6 +423,8 @@ message LayerParameter {
   optional LocLossParameter loc_loss_param = 213;
   // add the contrastive accuracy
   optional ContrastiveAccuracyParameter contrastive_accuracy_param = 214;
+  // add the global structure loss parameter
+  optional GlobalStructureLossParameter global_structure_loss_param = 215;
 }
 
 // Message that stores parameters used to apply transformation
@@ -936,6 +938,12 @@ message LiftedStructSimilaritySoftmaxLossParameter {
   optional float margin = 1 [default = 1.0];
 }
 
+message GlobalStructureLossParameter {
+  // the weight of inter class loss
+  optional float weight = 1 [default = 1.0];
+  // the margion of inter class contrative loss
+  optional float margin = 2 [default = 1.0];
+}
 // added by Kaichun Mo
 message SpatialTransformerParameter {
 
