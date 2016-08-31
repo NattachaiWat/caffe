@@ -41,6 +41,9 @@ class GlobalStructureLossLayer: public LossLayer<Dtype> {
         // the protected variables
 
         Blob<Dtype> class_centers_; // dictary, C*D*1*1 cache for label centers
+        Blob<Dtype> class_centers_norm_; // C*1*1*1 cache for each centers' L2 norm
+        Blob<Dtype> class_centers_product_;
+        Blob<Dtype> one_matrix_; // for fast add computation
         Blob<Dtype> center_matrix_; // tmp, N*D to speed mean subtracted
         Blob<Dtype> sparse_codes_; // C*N, to generate the code for other operator
         // N*D*1*1, the differ of x and it's center,  cache for backward propagation
