@@ -18,8 +18,8 @@ class GlobalStructureLossLayerTest : public MultiDeviceTest<TypeParam> {
     
   protected:
     GlobalStructureLossLayerTest()
-        :blob_bottom_data_(new Blob<Dtype>(256, 128, 1, 1)),
-        blob_bottom_y_(new Blob<Dtype>(256, 1, 1, 1)),
+        :blob_bottom_data_(new Blob<Dtype>(64, 32, 1, 1)),
+        blob_bottom_y_(new Blob<Dtype>(64, 1, 1, 1)),
         blob_top_loss_(new Blob<Dtype>())
     {
         // fille the values
@@ -30,18 +30,36 @@ class GlobalStructureLossLayerTest : public MultiDeviceTest<TypeParam> {
         filler.Fill(this->blob_bottom_data_);
         blob_bottom_vec_.push_back(blob_bottom_data_);
         // create the man-make value 
-        /*blob_bottom_data_->mutable_cpu_data()[0] = 1;
-        blob_bottom_data_->mutable_cpu_data()[1] = 1;
-        blob_bottom_data_->mutable_cpu_data()[2] = 2;
-        blob_bottom_data_->mutable_cpu_data()[3] = 2;
-        blob_bottom_data_->mutable_cpu_data()[4] = 3;
-        blob_bottom_data_->mutable_cpu_data()[5] = 3;
-        blob_bottom_data_->mutable_cpu_data()[6] = 4;
-        blob_bottom_data_->mutable_cpu_data()[7] = 4;
+        /*
+        blob_bottom_data_->mutable_cpu_data()[0] = 1/sqrt(2);
+        blob_bottom_data_->mutable_cpu_data()[1] = 1/sqrt(2);
+        blob_bottom_data_->mutable_cpu_data()[2] = 1/sqrt(2);
+        blob_bottom_data_->mutable_cpu_data()[3] = 1/sqrt(2);
+        blob_bottom_data_->mutable_cpu_data()[4] = 1/sqrt(2);
+        blob_bottom_data_->mutable_cpu_data()[5] = 1/sqrt(2);
+        blob_bottom_data_->mutable_cpu_data()[6] = 1/sqrt(2);
+        blob_bottom_data_->mutable_cpu_data()[7] = 1/sqrt(2);
         */
         for (int i = 0; i < blob_bottom_y_->count(); ++i)
         {
-            blob_bottom_y_->mutable_cpu_data()[i] = i % 2;
+            blob_bottom_y_->mutable_cpu_data()[i] = i % 16;
+        }
+        // normalize the input data 
+        Dtype* data = blob_bottom_data_->mutable_cpu_data();
+        int num = blob_bottom_data_->num();
+        int channels = blob_bottom_data_->channels();
+        for(int i=0; i<num; i++)
+        {
+            Dtype tmp = 0;
+            for(int j=0; j<channels; j++)
+            {
+                tmp += data[i*channels+j]*data[i*channels+j];
+            }
+            tmp = sqrt(tmp);
+            for(int j=0; j<channels; j++)
+            {
+                data[i*channels+j] /= tmp;
+            }
         }
         blob_bottom_vec_.push_back(blob_bottom_y_);
         blob_top_vec_.push_back(blob_top_loss_);
@@ -120,6 +138,7 @@ TYPED_TEST(GlobalStructureLossLayerTest, TestForward)
             class_centers_[offset + d]  += data[i*D + d];
         }
     }
+    Dtype* center_l2_norm_ = new Dtype [C];
     for(map<float, vector<float> >::iterator it = class_label_.begin(); it != class_label_.end(); it++)
     {
         int offset = int(it->second[0])*D;
@@ -127,16 +146,17 @@ TYPED_TEST(GlobalStructureLossLayerTest, TestForward)
         {
             class_centers_[offset + d] /= it->second[1]; // normalize the vector
         }
+        Dtype tmp = 0;
+        for(int d=0; d<D; d++)
+        {
+            tmp += class_centers_[offset+d] * class_centers_[offset+d];
+        }
+        center_l2_norm_[int(it->second[0])] = sqrt(tmp);
+        for(int d=0; d<D; d++)
+        {
+            class_centers_[offset + d] /= center_l2_norm_[int(it->second[0])];
+        }
     }
-    // init the center_matrix_
-    //for(int i=0; i<num; i++)
-    //{
-    //    int offset = int(class_label_[y[i]][0]) * D;
-    //    for(int d=0; d<D; d++)
-    //    {
-    //        center_matrix_[offset + d] = data[i*D+d] - class_centers_[offset + d];
-    //    }
-    //}
     // init the diff_centers_centers_
     for(int c1 = 0; c1<C; c1++)
     {
@@ -169,9 +189,9 @@ TYPED_TEST(GlobalStructureLossLayerTest, TestForward)
     }
     loss_intra = loss_intra/2/C;
     // compute the inter loss
-    for(int c1=0; c1<C; c1++)
+    for(int c1=0; c1<C-1; c1++)
     {   
-        for(int c2=0; c2<C; c2++)
+        for(int c2=c1+1; c2<C; c2++)
         {
             Dtype tmp = 0;
             if (c1 == c2)
@@ -192,14 +212,14 @@ TYPED_TEST(GlobalStructureLossLayerTest, TestForward)
         }
     }
     if (C > 1)
-        loss_inter = loss_inter/2/C/(C-1);
+        loss_inter = loss_inter*2/C/(C-1);
     else
         loss_inter = 0;
     // compute the totally loss
     loss = loss_intra + weight*loss_inter;
     EXPECT_NEAR(this->blob_top_loss_->cpu_data()[0], loss, 1e-2);
-    EXPECT_NEAR(this->blob_top_loss_->cpu_data()[1], loss_intra, 1e-2);
-    EXPECT_NEAR(this->blob_top_loss_->cpu_data()[2], loss_inter, 1e-2);
+    // EXPECT_NEAR(this->blob_top_loss_->cpu_data()[1], loss_intra, 1e-2);
+    // EXPECT_NEAR(this->blob_top_loss_->cpu_data()[2], loss_inter, 1e-2);
 }
 
 TYPED_TEST(GlobalStructureLossLayerTest, TestBackward)
@@ -208,7 +228,7 @@ TYPED_TEST(GlobalStructureLossLayerTest, TestBackward)
     LayerParameter layer_param;
     GlobalStructureLossLayer<Dtype> layer(layer_param);
     layer.SetUp(this->blob_bottom_vec_, this->blob_top_vec_);
-    GradientChecker<Dtype> checker(1e-2, 1e-1, 1701);
+    GradientChecker<Dtype> checker(1e-2, 1e-2, 1701);
     // check the gradient for the first bottom layer
     checker.CheckGradientExhaustive(&layer, this->blob_bottom_vec_,
         this->blob_top_vec_, 0);

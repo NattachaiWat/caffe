@@ -101,8 +101,8 @@ void SoftmaxWithLossLayer<Dtype>::Forward_cpu(
       if (has_ignore_label_ && label_value == ignore_label_) {
         continue;
       }
-      DCHECK_GE(label_value, 0);
-      DCHECK_LT(label_value, prob_.shape(softmax_axis_));
+      CHECK_GE(label_value, 0);
+      CHECK_LT(label_value, prob_.shape(softmax_axis_));
       loss -= log(std::max(prob_data[i * dim + label_value * inner_num_ + j],
                            Dtype(FLT_MIN)));
       ++count;

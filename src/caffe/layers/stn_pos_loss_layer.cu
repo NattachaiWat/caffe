@@ -63,6 +63,7 @@ void StnPosLossLayer<Dtype>::Backward_gpu(const vector<Blob<Dtype>*>& top,
     
     const Dtype* data = bottom[0]->mutable_gpu_data();
     Dtype* diff = bottom[0]->mutable_gpu_diff();
+    caffe_gpu_set(bottom[0]->count(), Dtype(0.), diff);
     const int* pos = pos_.gpu_data();
     int L_pos = pos_.count();
     int cnt = bottom[0]->count()/bottom[0]->num();
