@@ -431,6 +431,8 @@ message LayerParameter {
   optional StnBoxLossParameter stn_box_loss_param = 217;
   // add the stn pos loss layer parameter
   optional StnPosLossParameter stn_pos_loss_param = 218;
+  // add the centerloss in eccv16 
+  optional CenterLossParameter center_loss_param = 219;
 }
 
 // Message that stores parameters used to apply transformation
@@ -1005,6 +1007,15 @@ message StnBoxLossParameter {
 message StnPosLossParameter {
     optional float threshold = 1 [default = 0];
     repeated uint32 position = 2; 
+}
+// by eccv16
+message CenterLossParameter {
+  optional uint32 num_output = 1; // The number of outputs for the layer
+  optional FillerParameter center_filler = 2; // The filler for the centers
+  // The first axis to be lumped into a single inner product computation;
+  // all preceding axes are retained in the output.
+  // May be negative to index from the end (e.g., -1 for the last axis).
+  optional int32 axis = 3 [default = 1];
 }
 
 message InfogainLossParameter {
