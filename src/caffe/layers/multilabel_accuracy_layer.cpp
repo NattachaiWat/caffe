@@ -125,11 +125,12 @@ void MultiLabelAccuracyLayer<Dtype>::Forward_cpu(const vector<Blob<Dtype>*>& bot
         }
     }
     // instance 
-    if (union_count > 0 && pt_count > 0 && gt_count > 0)
+    if (gt_count > 0)
     {
         effective_cnt += 1;
-        instance_accuracy += intersection_count*1.0/union_count;
-        instance_precision += intersection_count*1.0/pt_count;
+        float eps = 1e-6;
+        instance_accuracy += intersection_count*1.0/(union_count + eps);
+        instance_precision += intersection_count*1.0/(pt_count + eps);
         instance_recall += intersection_count*1.0/gt_count;
     }
   }
