@@ -50,6 +50,7 @@ public:
  private:
   int N;
   Dtype threshold;
+  Dtype rate_hw;
   Blob<int> pos_;
   Blob<Dtype> theta_bias_;
 

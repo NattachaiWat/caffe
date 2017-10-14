@@ -16,6 +16,7 @@ void StnCenterLossLayer<Dtype>::LayerSetUp(
 	string prefix = "\t\tCenter Loss Layer:: LayerSetUp: \t";
 
 	threshold = (Dtype) this->layer_param_.stn_center_loss_param().threshold();
+	rate_hw = (Dtype) this->layer_param_.stn_center_loss_param().rate_hw();
 	std::cout<<prefix<<"Getting threshold value = "<<threshold<<std::endl;
     
     // load the theta_bias value and pos, two values
@@ -75,7 +76,7 @@ void StnCenterLossLayer<Dtype>::Forward_cpu(const vector<Blob<Dtype>*>& bottom,
     {
         Dtype mdist = Dtype(0);
         mdist = (theta[i*channels + gt_pos[0]] - gt_bias[0])*(theta[i*channels + gt_pos[0]] - gt_bias[0]);
-        mdist += (theta[i*channels + gt_pos[1]] - gt_bias[1])*(theta[i*channels + gt_pos[1]] - gt_bias[1]);
+        mdist += rate_hw*rate_hw*(theta[i*channels + gt_pos[1]] - gt_bias[1])*(theta[i*channels + gt_pos[1]] - gt_bias[1]);
         mdist = mdist - threshold;
         if (mdist > 0)
         {
@@ -110,7 +111,7 @@ void StnCenterLossLayer<Dtype>::Backward_cpu(const vector<Blob<Dtype>*>& top,
             int index = i*channels + gt_pos[0];
             diff[index] = theta[index] - gt_bias[0];
             index = i*channels + gt_pos[1];
-            diff[index] = theta[index] - gt_bias[1];
+            diff[index] = rate_hw*(theta[index] - gt_bias[1]);
         }
     }
     caffe_cpu_scale(bottom[0]->count(), top[0]->cpu_diff()[0]/N, diff, diff);

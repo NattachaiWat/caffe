@@ -58,7 +58,9 @@ TYPED_TEST( StnCenterLossLayerTest, TestForward){
     LayerParameter layer_param;
     StnCenterLossParameter *stn_center_loss_param = layer_param.mutable_stn_center_loss_param();
     float threshold = 0.5;
+    float rate_hw = 2.0;
     stn_center_loss_param->set_threshold(threshold);
+    stn_center_loss_param->set_rate_hw(rate_hw);
     vector<Dtype> centers;
     centers.push_back(Dtype(0.5));
     centers.push_back(Dtype(0.5));
@@ -86,7 +88,7 @@ TYPED_TEST( StnCenterLossLayerTest, TestForward){
     {
         Dtype mdist = Dtype(0);
         mdist = (data[i*channels+poss[0]]-centers[0])*(data[i*channels+poss[0]]-centers[0]); 
-        mdist += (data[i*channels+poss[1]]-centers[1])*(data[i*channels+poss[1]]-centers[1]); 
+        mdist += rate_hw*rate_hw*(data[i*channels+poss[1]]-centers[1])*(data[i*channels+poss[1]]-centers[1]); 
         mdist -= threshold;
         if (mdist > 0)
         {

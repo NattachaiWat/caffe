@@ -1001,6 +1001,7 @@ message StnCenterLossParameter {
     repeated uint32 pos = 1; // pos of bias, which is used to compute the center point
     repeated float theta_bias = 2; // the initial bias
     optional float threshold = 3; // the threshold to keep the position to near the center
+    optional float rate_hw = 4 [default = 1]; // the prior rate of height/width
 }
 // add by dangweili
 message StnBoxLossParameter {
