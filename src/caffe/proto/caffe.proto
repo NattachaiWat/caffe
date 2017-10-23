@@ -429,6 +429,8 @@ message LayerParameter {
   optional GlobalStructureLossParameter global_structure_loss_param = 215;
   // add the stn center loss layer
   optional StnCenterLossParameter stn_center_loss_param = 216;
+  // add the stn key point loss
+  optional StnKeyPointLossParameter stn_key_point_loss_param = 221;
   // add the stn box loss layer parameter
   optional StnBoxLossParameter stn_box_loss_param = 217;
   // add the stn pos loss layer parameter
@@ -1014,6 +1016,12 @@ message LocLossParameter {
 message StnCenterLossParameter {
     repeated uint32 pos = 1; // pos of bias, which is used to compute the center point
     repeated float theta_bias = 2; // the initial bias
+    optional float threshold = 3; // the threshold to keep the position to near the center
+    optional float rate_hw = 4 [default = 1]; // the prior rate of height/width
+}
+// add by dangweili
+message StnKeyPointLossParameter {
+    repeated uint32 pos = 1; // pos of bias, which is used to compute the center point
     optional float threshold = 3; // the threshold to keep the position to near the center
     optional float rate_hw = 4 [default = 1]; // the prior rate of height/width
 }
