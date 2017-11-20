@@ -39,7 +39,7 @@ class MultiImageDataLayer : public BasePrefetchingDataLayer<Dtype> {
   virtual void ShuffleImages();
   virtual void load_batch(Batch<Dtype>* batch);
 
-  vector<std::pair<std::string, vector<int> > > lines_;
+  vector<std::pair<std::string, vector<float> > > lines_;
   int lines_id_;
 };
 

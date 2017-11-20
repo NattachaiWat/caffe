@@ -49,8 +49,8 @@ void MultiImageDataLayer<Dtype>::DataLayerSetUp(const vector<Blob<Dtype>*>& bott
   while( std::getline(infile, line) )
   {
       std::istringstream iss(line);
-      vector<int> label;
-      int label_temp;
+      vector<float> label;
+      float label_temp;
       iss >> filename; // read the image name
       while( iss>> label_temp ) label.push_back( label_temp );
       if( line_num == 1) num_labels = label.size();
