@@ -96,8 +96,13 @@ int feature_extraction_pipeline(int argc, char** argv) {
   std::string feature_extraction_proto(argv[++arg_pos]);
   boost::shared_ptr<Net<Dtype> > feature_extraction_net(
       new Net<Dtype>(feature_extraction_proto, caffe::TEST));
-  feature_extraction_net->CopyTrainedLayersFrom(pretrained_binary_proto);
-
+  // init the net with mutiple caffe models
+  std::vector<std::string> model_names;
+  boost:split(model_names, pretrained_binary_proto, boost::is_any_of(","));
+  for (int i = 0; i < model_names.size(); i++)
+  {
+      feature_extraction_net->CopyTrainedLayersFrom(model_names[i]);
+  }
   std::string extract_feature_blob_names(argv[++arg_pos]);
   std::vector<std::string> blob_names;
   boost::split(blob_names, extract_feature_blob_names, boost::is_any_of(","));
