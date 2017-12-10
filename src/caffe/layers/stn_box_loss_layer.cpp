@@ -98,7 +98,7 @@ void StnBoxLossLayer<Dtype>::Backward_cpu(const vector<Blob<Dtype>*>& top,
 }
 
 #ifdef CPU_ONLY
-STUB_GPU(StnBoxLayer);
+STUB_GPU(StnBoxLossLayer);
 #endif
 
 INSTANTIATE_CLASS(StnBoxLossLayer);

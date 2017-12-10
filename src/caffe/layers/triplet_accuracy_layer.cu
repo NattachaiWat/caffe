@@ -64,6 +64,14 @@ void TripletAccuracyLayer<Dtype>::Forward_gpu(
    top[0]->mutable_cpu_data()[0] = accuracy/bottom[0]->num();
  }
 
+template <typename Dtype>
+void TripletAccuracyLayer<Dtype>::Backward_gpu(const vector<Blob<Dtype>*>& top,
+      const vector<bool>& propagate_down, const vector<Blob<Dtype>*>& bottom)
+{
+    for (int i = 0; i < propagate_down.size(); ++i) {
+      if (propagate_down[i]) { NOT_IMPLEMENTED; }
+    }
+}
 INSTANTIATE_LAYER_GPU_FUNCS(TripletAccuracyLayer);
 
 }  // namespace caffe

@@ -101,7 +101,7 @@ void StnPosLossLayer<Dtype>::Backward_cpu(const vector<Blob<Dtype>*>& top,
 }
 
 #ifdef CPU_ONLY
-STUB_GPU(StnPosLayer);
+STUB_GPU(StnPosLossLayer);
 #endif
 
 INSTANTIATE_CLASS(StnPosLossLayer);

@@ -41,12 +41,8 @@ class TwoEltwiseLayer : public Layer<Dtype> {
         if( propagate_down[i] ) { NOT_IMPLEMENTED; }
   };
   virtual void Backward_gpu(const vector<Blob<Dtype>*>& top,
-      const vector<bool>& propagate_down, const vector<Blob<Dtype>*>& bottom) {
-    for (int i=0; i< propagate_down.size(); i++)
-        if( propagate_down[i] ) { NOT_IMPLEMENTED; }
+      const vector<bool>& propagate_down, const vector<Blob<Dtype>*>& bottom);
   
-  };
-
   // just forward for hard negative mining
   TwoEltwiseParameter_TwoEltwiseOp op_;
   Blob<Dtype> preoutput_;

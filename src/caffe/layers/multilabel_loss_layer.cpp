@@ -213,6 +213,9 @@ void MultiLabelLossLayer<Dtype>::Backward_cpu(
   }
 }
 
+#ifdef CPU_ONLY
+STUB_GPU(MultiLabelLossLayer);
+#endif
 
 INSTANTIATE_CLASS(MultiLabelLossLayer);
 REGISTER_LAYER_CLASS(MultiLabelLoss);

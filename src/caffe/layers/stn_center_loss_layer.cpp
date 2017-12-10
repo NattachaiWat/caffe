@@ -118,7 +118,7 @@ void StnCenterLossLayer<Dtype>::Backward_cpu(const vector<Blob<Dtype>*>& top,
 }
 
 #ifdef CPU_ONLY
-STUB_GPU(StnCenterLayer);
+STUB_GPU(StnCenterLossLayer);
 #endif
 
 INSTANTIATE_CLASS(StnCenterLossLayer);

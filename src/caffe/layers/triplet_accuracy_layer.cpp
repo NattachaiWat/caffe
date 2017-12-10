@@ -65,6 +65,10 @@ void TripletAccuracyLayer<Dtype>::Forward_cpu(const vector<Blob<Dtype>*>& bottom
     top[0]->mutable_cpu_data()[0] = accuracy / bottom[0]->num();
 }
 
+#ifdef CPU_ONLY
+STUB_GPU(TripletAccuracyLayer);
+#endif
+
 INSTANTIATE_CLASS(TripletAccuracyLayer);
 REGISTER_LAYER_CLASS(TripletAccuracy);
 

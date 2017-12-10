@@ -95,11 +95,7 @@ class ContrastiveAccuracyLayer : public Layer<Dtype> {
     }
   }
   virtual void Backward_gpu(const vector<Blob<Dtype>*>& top,
-      const vector<bool>& propagate_down, const vector<Blob<Dtype>*>& bottom){
-    for (int i = 0; i < propagate_down.size(); ++i) {
-        if(propagate_down[i]) {NOT_IMPLEMENTED; }
-    }
-  }
+      const vector<bool>& propagate_down, const vector<Blob<Dtype>*>& bottom);
 
   Blob<Dtype> diff_;  // cached for backward pass
   Blob<Dtype> dist_sq_;  // cached for backward pass
