@@ -437,8 +437,11 @@ message LayerParameter {
   optional StnPosLossParameter stn_pos_loss_param = 218;
   // add the centerloss in eccv16 
   optional CenterLossParameter center_loss_param = 219;
-  // add the alrge margin softmax loss
+  // add the large margin softmax loss
   optional LargeMarginInnerProductParameter largemargin_inner_product_param = 220;
+  // add the oim layer (labeled and unlabeled) 
+  optional LabeledMatchingParameter labeled_matching_param = 222;
+  optional UnlabeledMatchingParameter unlabeled_matching_param = 223;
 }
 
 // Message that stores parameters used to apply transformation
@@ -1060,6 +1063,17 @@ message LargeMarginInnerProductParameter {
   optional int32 iteration = 8 [default = 0];
   optional float lambda_min = 9 [default = 0];
 }
+
+// add the oim layer (labeled and unlabeled)
+message LabeledMatchingParameter {
+  required int32 num_classes = 1;
+  optional float momentum = 2 [default = 0.5];
+}
+
+message UnlabeledMatchingParameter {
+  optional int32 queue_size = 1 [default = 1000];
+}
+
 message InfogainLossParameter {
   // Specify the infogain matrix source.
   optional string source = 1;
