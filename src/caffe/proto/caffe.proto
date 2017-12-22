@@ -442,6 +442,8 @@ message LayerParameter {
   // add the oim layer (labeled and unlabeled) 
   optional LabeledMatchingParameter labeled_matching_param = 222;
   optional UnlabeledMatchingParameter unlabeled_matching_param = 223;
+  // add the online triplet loss
+  optional OnlineTripletLossParameter online_triplet_loss_param = 224;
 }
 
 // Message that stores parameters used to apply transformation
@@ -932,6 +934,24 @@ message TripletAccuracyParameter{
     optional float margin = 1 [default = 1.0];
 }
 
+message OnlineTripletLossParameter {
+  enum SampleMethod {
+    ALL = 0;
+    HARD = 1;
+    MODERATE = 2;
+  }
+  // margin between positive similarity and negative similarity
+  optional float margin = 1 [default = 0.2];
+  // weight of triplet loss
+  optional float mu = 2 [default = 1.0];
+  // contains the very hard negative samples or not
+  optional SampleMethod negative = 3 [default = ALL];
+  // contains the very hard negative samples or not
+  optional SampleMethod positive = 4 [default = ALL];
+  // use all triplet size just for smooth gradient check
+  optional bool all_triplets = 5 [default = false];
+}
+
 // -----------add onlie pair contrast loss parameter -------
 message OnlinePairLossParameter {
   // margin for dissimilar pair
@@ -947,6 +967,9 @@ message OnlinePairLossParameter {
   optional int32 hards_pos = 4 [default = 150];
   optional int32 hards_neg = 5 [default = 150];
 }
+
+
+
 message RandomPairLossParameter {
   // margin for dissimilar pair
   optional float margin_pos = 1 [default = 0.0];
